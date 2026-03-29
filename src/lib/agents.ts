@@ -76,6 +76,7 @@ export interface ChamberMessage {
   source: 'Ledger' | 'Live: News' | 'Analysis';
   timestamp: Date;
   dissent?: boolean;
+  model?: string;
 }
 
 export interface AgentVote {
