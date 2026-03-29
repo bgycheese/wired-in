@@ -56,6 +56,11 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                     <span className="text-muted-foreground ml-2 text-[10px]">
                       [{msg.source}]
                     </span>
+                    {msg.model && (
+                      <span className="text-muted-foreground/40 ml-1 text-[9px]">
+                        via {msg.model}
+                      </span>
+                    )}
                   </span>
                 </div>
               </motion.div>
