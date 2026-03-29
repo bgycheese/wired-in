@@ -3,14 +3,13 @@ import { toast } from 'sonner';
 import TickerTape from '@/components/TickerTape';
 import AgentRoster from '@/components/AgentRoster';
 import ChamberFloor from '@/components/ChamberFloor';
-import HeatMap from '@/components/HeatMap';
+
 import ControlBar from '@/components/ControlBar';
 import InterventionModal from '@/components/InterventionModal';
 import VotePanel from '@/components/VotePanel';
 import { useChamberDebate } from '@/hooks/useChamberDebate';
 import {
   MOCK_SCENARIO,
-  MOCK_CONSENSUS,
   MOCK_VOTES,
   type AgentRole,
   type ChamberMessage,
@@ -173,7 +172,7 @@ const Index = () => {
               />
               <VotePanel votes={MOCK_VOTES} visible={showVotes} />
             </div>
-            <HeatMap consensus={MOCK_CONSENSUS} />
+            
           </div>
 
           <ControlBar

@@ -28,7 +28,7 @@ const AGENTS: AgentConfig[] = [
     name: "F. Weber",
     model: "google/gemini-2.5-pro",
     provider: "google",
-    systemPrompt: `You are Frank Weber, CTO of BMW Group. You champion Neue Klasse architecture, Gen6 batteries, and software-defined vehicles. You push for engineering focus. Cite technical specs. Challenge the CEO when technology neutrality dilutes engineering excellence. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Frank Weber, CTO of BMW Group. You champion Neue Klasse architecture, Gen6 batteries, and software-defined vehicles. You push for engineering focus. Cite technical specs. Challenge the CEO when technology neutrality dilutes engineering excellence. Every claim must end with [Source: Ledger] or [Source: Analysis]. Respond with 80-120 words. Be thorough and detailed.`,
   },
   {
     role: "CFO",
@@ -42,7 +42,7 @@ const AGENTS: AgentConfig[] = [
     name: "M. Nedeljković",
     model: "google/gemini-3.1-pro-preview",
     provider: "google",
-    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. You manage iFactory, production flexibility, and supply chain across 31 plants. Think in lead times, retooling costs, and logistics. Cite plant data for Munich, Dingolfing, Spartanburg. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. You manage iFactory, production flexibility, and supply chain across 31 plants. Think in lead times, retooling costs, and logistics. Cite plant data for Munich, Dingolfing, Spartanburg. Every claim must end with [Source: Ledger] or [Source: Analysis]. Respond with 80-120 words. Be thorough and detailed.`,
   },
   {
     role: "CHRO",
@@ -81,8 +81,8 @@ async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: st
     },
     body: JSON.stringify({
       model: agent.model,
-      max_tokens: 200,
-      system: `${agent.systemPrompt}\n\n${LEDGER}`,
+    max_tokens: 400,
+    system: `${agent.systemPrompt}\n\n${LEDGER}`,
       messages: [{ role: "user", content: userContent }],
     }),
   });
@@ -105,7 +105,7 @@ async function callGemini(agent: AgentConfig, userContent: string, apiKey: strin
         { role: "system", content: `${agent.systemPrompt}\n\n${LEDGER}` },
         { role: "user", content: userContent },
       ],
-      max_tokens: 200,
+      max_tokens: 400,
     }),
   });
   if (!res.ok) {
