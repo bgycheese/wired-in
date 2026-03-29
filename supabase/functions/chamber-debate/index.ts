@@ -97,51 +97,7 @@ const LEDGER = `[BMW GROUP MASTER LEDGER: 2016-2026]
 - PRICING: High-end models (7, 8, XM) subsidize the lower-margin EV ramp-up.
 - POLITICAL UNSTABILITY: "Local for Local" strategy. Building engines in the markets where they are sold to bypass trade wars.`;
 
-async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: string) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: agent.model,
-      max_tokens: 400,
-      system: `${agent.systemPrompt}\n\n${LEDGER}`,
-      messages: [{ role: "user", content: userContent }],
-    }),
-  });
-  if (!res.ok) {
-    const t = await res.text();
-    console.error(`Anthropic ${agent.role} (${agent.model}) error ${res.status}:`, t);
-    return { content: `[ERROR] Claude agent failed (${res.status}). ${t.slice(0, 100)}`, error: true };
-  }
-  const data = await res.json();
-  return { content: (data.content?.[0]?.text || "[No response]").trim(), error: false };
-}
-
-async function callGemini(agent: AgentConfig, userContent: string, apiKey: string) {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: agent.model,
-      messages: [
-        { role: "system", content: `${agent.systemPrompt}\n\n${LEDGER}` },
-        { role: "user", content: userContent },
-      ],
-      max_tokens: 400,
-    }),
-  });
-  if (!res.ok) {
-    const t = await res.text();
-    console.error(`Gemini ${agent.role} (${agent.model}) error ${res.status}:`, t);
-    return { content: `[ERROR] Gemini agent failed (${res.status}).`, error: true };
-  }
-  const data = await res.json();
-  return { content: (data.choices?.[0]?.message?.content || "[No response]").trim(), error: false };
-}
+// API calls are now inlined in the sequential loop below
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -175,25 +131,90 @@ serve(async (req) => {
       ? `\nDIRECTIVE: ${userDirective.directive} (Target: ${userDirective.targetRole})`
       : "";
 
-    const results = await Promise.all(
-      AGENTS.map(async (agent) => {
-        const isTarget = userDirective?.targetRole === agent.role;
-        const prompt = `SCENARIO: ${scenario}\n${thread ? `DISCUSSION:\n${thread}\n` : ""}${directive}${isTarget ? `\n⚡ DIRECT DIRECTIVE TO YOU: "${userDirective.directive}". Incorporate this.` : ""}\nRespond as ${agent.role}. Challenge others. Max 60 words. Cite sources.`;
+    // Sequential execution: each agent sees all prior agent responses
+    const conversationHistory: { role: string; content: string }[] = [
+      { role: "user", content: `SCENARIO: ${scenario}${thread ? `\nDISCUSSION:\n${thread}` : ""}${directive}` },
+    ];
 
-        const result =
-          agent.provider === "anthropic"
-            ? await callAnthropic(agent, prompt, CLAUDE_KEY)
-            : await callGemini(agent, prompt, LOVABLE_KEY);
+    const results = [];
+    for (const agent of AGENTS) {
+      const isTarget = userDirective?.targetRole === agent.role;
+      const agentSystemPrompt = `${agent.systemPrompt}\n\n${LEDGER}`;
 
-        return {
-          role: agent.role,
-          model: agent.model,
-          provider: agent.provider,
-          content: result.content,
-          error: result.error,
-        };
-      }),
-    );
+      // Build messages for this agent including full conversation history
+      const messages = [
+        { role: "system" as const, content: agentSystemPrompt },
+        ...conversationHistory,
+        ...(isTarget
+          ? [{ role: "user" as const, content: `⚡ DIRECT DIRECTIVE TO YOU: "${userDirective!.directive}". Incorporate this.` }]
+          : []),
+        { role: "user" as const, content: `Respond as ${agent.role}. Challenge others if you disagree. Max 60 words. Cite sources.` },
+      ];
+
+      let result;
+      if (agent.provider === "anthropic") {
+        const nonSystem = messages.filter((m) => m.role !== "system");
+        const anthropicMessages = nonSystem.map((m) => ({
+          role: m.role === "user" ? "user" as const : "assistant" as const,
+          content: m.content,
+        }));
+        const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "x-api-key": CLAUDE_KEY,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: agent.model,
+            max_tokens: 400,
+            system: agentSystemPrompt,
+            messages: anthropicMessages,
+          }),
+        });
+        if (!anthropicRes.ok) {
+          const t = await anthropicRes.text();
+          console.error(`Anthropic ${agent.role} error:`, t);
+          result = { content: `[ERROR] Claude agent failed (${anthropicRes.status}).`, error: true };
+        } else {
+          const data = await anthropicRes.json();
+          result = { content: (data.content?.[0]?.text || "[No response]").trim(), error: false };
+        }
+      } else {
+        // Gemini via Lovable gateway (OpenAI-compatible)
+        const geminiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: agent.model,
+            messages,
+            max_tokens: 400,
+          }),
+        });
+        if (!geminiRes.ok) {
+          const t = await geminiRes.text();
+          console.error(`Gemini ${agent.role} error:`, t);
+          result = { content: `[ERROR] Gemini agent failed (${geminiRes.status}).`, error: true };
+        } else {
+          const data = await geminiRes.json();
+          result = { content: (data.choices?.[0]?.message?.content || "[No response]").trim(), error: false };
+        }
+      }
+
+      // Append this agent's response to conversation history for next agents
+      conversationHistory.push({
+        role: "assistant",
+        content: `[${agent.role} - ${agent.name}]: ${result.content}`,
+      });
+
+      results.push({
+        role: agent.role,
+        model: agent.model,
+        provider: agent.provider,
+        content: result.content,
+        error: result.error,
+      });
+    }
 
     return new Response(JSON.stringify({ responses: results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
