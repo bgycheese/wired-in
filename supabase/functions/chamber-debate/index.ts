@@ -197,15 +197,11 @@ serve(async (req) => {
 
       let result;
       if (agent.provider === "anthropic") {
-        // Anthropic uses separate system param; extract non-system messages
         const nonSystem = messages.filter((m) => m.role !== "system");
-        // Map roles: Anthropic only accepts "user" and "assistant"
         const anthropicMessages = nonSystem.map((m) => ({
           role: m.role === "user" ? "user" as const : "assistant" as const,
           content: m.content,
         }));
-        result = await callAnthropic(agent, JSON.stringify(anthropicMessages), CLAUDE_KEY);
-        // Override with proper Anthropic call using structured messages
         const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
           headers: {
