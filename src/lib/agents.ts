@@ -13,7 +13,7 @@ export interface Agent {
 export const AGENTS: Record<AgentRole, Agent> = {
   CEO: {
     role: 'CEO',
-    name: 'O. Zipse',
+    name: 'Oliver Zipse',
     focus: 'Strategy & Vision',
     kpi: 'Brand Value / Technology Neutrality',
     color: 'text-gold',
@@ -22,7 +22,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
   },
   CTO: {
     role: 'CTO',
-    name: 'F. Weber',
+    name: 'Frank Weber',
     focus: 'R&D / Technology',
     kpi: 'Neue Klasse Architecture / Software Stack',
     color: 'text-bmw-blue',
@@ -31,7 +31,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
   },
   CFO: {
     role: 'CFO',
-    name: 'W. Mertl',
+    name: 'Walter Mertl',
     focus: 'Capital & Risk',
     kpi: 'EBIT 8-10% / CapEx Efficiency',
     color: 'text-terminal-green',
@@ -40,7 +40,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
   },
   COO: {
     role: 'COO',
-    name: 'M. Nedeljković',
+    name: 'Milan Nedeljković',
     focus: 'Production & Supply',
     kpi: 'iFactory Flex / Energy Costs',
     color: 'text-terminal-amber',
@@ -49,7 +49,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
   },
   CHRO: {
     role: 'CHRO',
-    name: 'I. Horstmeier',
+    name: 'Ilka Horstmeier',
     focus: 'Culture & People',
     kpi: 'EV Skill Gap / BMW Way',
     color: 'text-purple-400',
@@ -58,7 +58,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
   },
   CSO: {
     role: 'CSO',
-    name: 'J. Goller',
+    name: 'Jochen Goller',
     focus: 'Sales & Markets',
     kpi: 'China Volatility / Premium Pricing',
     color: 'text-cyan-400',
