@@ -1,6 +1,35 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { AGENTS, type ChamberMessage } from '@/lib/agents';
 import { AlertTriangle } from 'lucide-react';
+import React from 'react';
+
+/** Renders text with **bold** markers and line breaks for numbered items / headers */
+const FormattedContent = ({ text }: { text: string }) => {
+  // Split on numbered items or known headers to create line breaks
+  const lines = text.split(/(?=\(\d+\)\s|(?:Current Assessment|Executive Order|Capability Analysis|R&D Action|Financial Audit|Margin Impact|Capital Allocation|Operational Report|Logistics|Plant Directive|Labor Risk|Talent Strategy|Workforce Impact|Region Analysis|Sales Strategy|Market Intelligence):)/i);
+
+  return (
+    <>
+      {lines.map((line, i) => {
+        // Parse **bold** segments
+        const parts = line.split(/(\*\*[^*]+\*\*)/g);
+        return (
+          <React.Fragment key={i}>
+            {i > 0 && <br />}
+            <span className={i > 0 ? 'ml-4 inline-block' : ''}>
+              {parts.map((part, j) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return <strong key={j} className="text-foreground font-bold">{part.slice(2, -2)}</strong>;
+                }
+                return <React.Fragment key={j}>{part}</React.Fragment>;
+              })}
+            </span>
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+};
 
 interface ChamberFloorProps {
   messages: ChamberMessage[];
@@ -51,8 +80,8 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                   )}
 
                   {/* Content */}
-                  <span className="text-foreground text-sm">
-                    {msg.content}
+                  <div className="text-foreground text-sm flex-1">
+                    <FormattedContent text={msg.content} />
                     <span className="text-foreground/40 ml-2 text-xs">
                       [{msg.source}]
                     </span>
@@ -61,7 +90,7 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                         via {msg.model}
                       </span>
                     )}
-                  </span>
+                  </div>
                 </div>
               </motion.div>
             );
