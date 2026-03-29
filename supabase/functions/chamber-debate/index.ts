@@ -47,7 +47,7 @@ const AGENTS: AgentConfig[] = [
   {
     role: "CHRO",
     name: "I. Horstmeier",
-    model: "claude-haiku-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     provider: "anthropic",
     systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. You protect the workforce and "BMW Way" culture. Manage EV skill-gap transition for 120,000+ employees and IG Metall agreements. Flag when decisions exceed workforce adaptation capacity. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },

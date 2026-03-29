@@ -53,7 +53,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Culture & People',
     kpi: 'EV Skill Gap / BMW Way',
     color: 'text-purple-400',
-    model: 'claude-haiku-4',
+    model: 'claude-haiku-4.5',
     provider: 'Anthropic',
   },
   CSO: {
