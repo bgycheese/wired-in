@@ -27,7 +27,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
         className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] border border-border rounded-sm text-muted-foreground hover:text-foreground hover:border-muted-foreground transition-colors"
       >
         {isDebating ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-        {isDebating ? 'Pause' : 'Resume'}
+        {isDebating ? 'Processing...' : 'Next Round'}
       </button>
 
       <button
