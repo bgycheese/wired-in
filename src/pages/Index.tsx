@@ -214,8 +214,7 @@ const Index = () => {
             <div className="flex gap-2 mt-3">
               <button
                 onClick={handleScenarioSubmit}
-                disabled={!scenarioInput.trim()}
-                className="px-4 py-2.5 bg-gold/10 border border-gold text-gold font-mono text-xs uppercase tracking-[0.15em] rounded-sm hover:bg-gold/20 transition-colors disabled:opacity-30"
+                className="px-4 py-2.5 bg-gold/10 border border-gold text-gold font-mono text-xs uppercase tracking-[0.15em] rounded-sm hover:bg-gold/20 transition-colors"
               >
                 Initiate Debate
               </button>
