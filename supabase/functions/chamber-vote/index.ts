@@ -23,16 +23,20 @@ const AGENTS: AgentConfig[] = [
 ];
 
 const VOTE_PROMPT = (role: string, scenario: string, debate: string) =>
-  `You are a BMW Board member (${role}). Based on this scenario and debate, cast your final vote.
+  `You are a BMW Board member (${role}). Based on this scenario and debate, give your final position.
 
 SCENARIO: ${scenario}
 
 DEBATE SUMMARY:
 ${debate}
 
-Respond ONLY in this exact format (no other text):
+If the scenario is a yes/no decision, respond in this format:
 POSITION: FOR or AGAINST or CONDITIONAL
-STANCE: [One clear sentence explaining your position, max 25 words]`;
+STANCE: [One clear sentence, max 25 words]
+
+If the scenario is an open-ended question (not yes/no), respond in this format:
+POSITION: OPINION
+STANCE: [Your concise recommendation or answer in one sentence, max 30 words]`;
 
 async function callAnthropic(model: string, prompt: string, apiKey: string) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -58,10 +62,10 @@ async function callGemini(model: string, prompt: string, apiKey: string) {
 
 function parseVote(raw: string | null): { position: string; stance: string } {
   if (!raw) return { position: "CONDITIONAL", stance: "Unable to determine position." };
-  const posMatch = raw.match(/POSITION:\s*(FOR|AGAINST|CONDITIONAL)/i);
+  const posMatch = raw.match(/POSITION:\s*(FOR|AGAINST|CONDITIONAL|OPINION)/i);
   const stanceMatch = raw.match(/STANCE:\s*(.+)/i);
   return {
-    position: posMatch ? posMatch[1].toUpperCase() : "CONDITIONAL",
+    position: posMatch ? posMatch[1].toUpperCase() : "OPINION",
     stance: stanceMatch ? stanceMatch[1].trim() : raw.slice(0, 120),
   };
 }
@@ -93,9 +97,21 @@ serve(async (req) => {
     }));
 
     // Determine verdict
+    const opinionCount = results.filter(r => r.position === "OPINION").length;
     const forCount = results.filter(r => r.position === "FOR").length;
     const againstCount = results.filter(r => r.position === "AGAINST").length;
-    const verdict = forCount > againstCount ? "MOTION APPROVED" : forCount === againstCount ? "DEADLOCKED" : "MOTION REJECTED";
+
+    let verdict: string;
+    if (opinionCount > results.length / 2) {
+      // Open-ended question — check if stances align
+      verdict = "NO MAJORITY CONSENSUS — INDIVIDUAL OPINIONS LOGGED";
+    } else if (forCount > againstCount) {
+      verdict = "MOTION APPROVED";
+    } else if (againstCount > forCount) {
+      verdict = "MOTION REJECTED";
+    } else {
+      verdict = "DEADLOCKED";
+    }
 
     return new Response(JSON.stringify({ votes: results, verdict }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
