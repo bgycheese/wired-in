@@ -69,3 +69,8 @@ At the end of the debate, the board reaches a verdict.
 Built for HR professionals who want a structured, multi-perspective evaluation 
 of hiring decisions — surfacing blind spots, stress-testing candidate fit, and 
 simulating how different stakeholders would weigh in before a real panel interview.
+
+
+## Webstie
+
+https://chamber-chiefs.com/
