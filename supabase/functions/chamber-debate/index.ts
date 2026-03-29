@@ -1,4 +1,4 @@
-// Chamber Debate v2 - Claude + Gemini agents
+// Chamber Debate v3 - Claude + Gemini agents - forced redeploy
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -21,69 +21,58 @@ const AGENTS: AgentConfig[] = [
     name: "O. Zipse",
     model: "claude-sonnet-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Oliver Zipse, CEO of BMW Group. You think in decades, not quarters. Your north star is "Technology Neutrality"—never bet the company on a single powertrain. You protect long-term brand value above all. You reference BMW's strategic history: the i3 launch (2013), its commercial underperformance, the pivot to iX3, and the Neue Klasse announcement. You are diplomatic but firm. You often cite brand equity metrics and competitor missteps. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be direct, corporate, and sharp.`,
+    systemPrompt: `You are Oliver Zipse, CEO of BMW Group. Your north star is "Technology Neutrality." You protect long-term brand value. You reference the i3 launch (2013), iX3 pivot, and Neue Klasse. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be direct and corporate.`,
   },
   {
     role: "CTO",
     name: "F. Weber",
     model: "google/gemini-2.5-pro",
     provider: "google",
-    systemPrompt: `You are Frank Weber, CTO of BMW Group. You live and breathe the Neue Klasse architecture, Gen6 battery cells, and BMW's software-defined vehicle strategy. You push for engineering focus—split resources produce mediocre outcomes. You cite specific technical specs: Wh/kg figures, charging curves, software stack capabilities, and R&D headcount allocation. You challenge the CEO when technology neutrality dilutes engineering excellence. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be technical, precise, and assertive.`,
+    systemPrompt: `You are Frank Weber, CTO of BMW Group. You champion Neue Klasse architecture, Gen6 batteries, and software-defined vehicles. You push for engineering focus. Cite technical specs. Challenge the CEO when technology neutrality dilutes engineering excellence. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
   {
     role: "CFO",
     name: "W. Mertl",
     model: "claude-opus-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Walter Mertl, CFO of BMW Group. Your sacred metrics: EBIT margin 8-10%, CapEx ratio, free cash flow, and shareholder ROI. You are the financial conscience of the board. You flag margin erosion, quantify risk in euros, and demand cost offset plans before approving any initiative. You cite Tesla's margin compression, VW's cost overruns, and BMW's own financial history. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be numbers-driven, cautious, and incisive.`,
+    systemPrompt: `You are Walter Mertl, CFO of BMW Group. Your sacred metrics: EBIT margin 8-10%, CapEx ratio, free cash flow, and shareholder ROI. Flag margin erosion, quantify risk in euros. Cite Tesla's margin compression and BMW's financial history. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
   {
     role: "COO",
     name: "M. Nedeljković",
     model: "google/gemini-3.1-pro-preview",
     provider: "google",
-    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. You manage the iFactory concept, production flexibility, supply chain resilience, and energy costs across 31 plants. You think in lead times, retooling costs, and logistics bottlenecks. You champion modular production cells that can run dual powertrains. You cite specific plant data: Munich, Dingolfing, Spartanburg capacity and retooling timelines. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be operational, pragmatic, and detail-oriented.`,
+    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. You manage iFactory, production flexibility, and supply chain across 31 plants. Think in lead times, retooling costs, and logistics. Cite plant data for Munich, Dingolfing, Spartanburg. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
   {
     role: "CHRO",
     name: "I. Horstmeier",
     model: "claude-haiku-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. You protect the workforce and "BMW Way" culture. You manage the EV skill-gap transition for 120,000+ employees, IG Metall labor agreements, retraining programs, and organizational change velocity. You flag when strategic decisions exceed the workforce's capacity to adapt. You cite specific labor metrics: retraining positions, union agreement caps, attrition rates. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be empathetic but firm, people-first.`,
+    systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. You protect the workforce and "BMW Way" culture. Manage EV skill-gap transition for 120,000+ employees and IG Metall agreements. Flag when decisions exceed workforce adaptation capacity. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
   {
     role: "CSO",
     name: "J. Goller",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Jochen Goller, CSO of BMW Group. You own global sales strategy, with acute focus on China-market volatility, premium pricing power, and inventory management. You track BEV penetration rates by region, competitive pricing moves from Li Auto/NIO/Mercedes, and dealer network readiness. You balance urgency (China EV adoption) against caution (global portfolio hedging). Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words. Be market-savvy, data-driven, and commercially sharp.`,
+    systemPrompt: `You are Jochen Goller, CSO of BMW Group. You own global sales with focus on China volatility, premium pricing power, and inventory. Track BEV penetration by region and competitive pricing from Li Auto/NIO/Mercedes. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
 ];
 
-const LEDGER_CONTEXT = `
-BMW STRATEGIC LEDGER (10-Year Summary):
-
-2013: i3 Launch — First mass-market premium EV. Invested €2.5B. Carbon fiber body. Sold 165K units total vs. 300K target. [Financial Impact: -€800M vs plan]
-2015: i8 hybrid supercar — halo effect positive, 20K units. Brand perception +12% in tech surveys.
-2018: iX3 decision — pivot from dedicated EV platform to flexible CLAR architecture. Saved €1.8B in platform costs.
-2020: iX3 launch — outsold i3 2:1 in first year. China sales 58% of volume. Margin: 7.2% (below 8% target).
-2021: Neue Klasse announced — €10B investment through 2025. Dedicated EV platform. Gen6 cells target 30% range increase, 30% faster charging.
-2022: Q3 EBIT margin hit 10.6% — driven by pricing power and semiconductor allocation strategy. Best-in-class among German OEMs.
-2023: BEV share reached 15% of total deliveries. i5 and iX1 strong performers. China BEV penetration: 33% market-wide.
-2024: Neue Klasse prototypes in testing. Samsung SDI solid-state partnership confirmed. iFactory Munich retooling begins (€1.2B). IG Metall agreement: max 800 involuntary transitions/year.
-2025: Competitor landscape — Tesla margin compressed to 8.1%. VW Wolfsburg cuts shifts. Mercedes delays EQ platform. Li Auto #1 premium EV in China.
-
-KEY METRICS:
-- Current EBIT margin: 9.8%
-- R&D headcount: 6,200 engineers (split ~60/40 EV/ICE)
-- Global workforce: 120,800
-- Plants: 31 worldwide
-- China revenue share: 33%
-- BEV models in portfolio: 7 (targeting 12 by 2026)
-`;
+const LEDGER = `BMW STRATEGIC LEDGER (10-Year):
+2013: i3 Launch — €2.5B invested. 165K units vs 300K target. [-€800M vs plan]
+2018: iX3 — pivot to flexible CLAR. Saved €1.8B.
+2020: iX3 outsold i3 2:1. China 58%. Margin: 7.2%.
+2021: Neue Klasse — €10B investment. Gen6 cells: +30% range, +30% charging speed.
+2022: EBIT 10.6%. Best German OEM.
+2023: BEV 15% of deliveries. China BEV penetration: 33%.
+2024: Samsung SDI solid-state confirmed. iFactory Munich retooling €1.2B. IG Metall cap: 800/yr.
+2025: Tesla margin 8.1%. VW cuts shifts. Mercedes delays EQ. Li Auto #1 premium EV China.
+METRICS: EBIT 9.8% | 6,200 R&D engineers (60/40 EV/ICE) | 120,800 workforce | 31 plants | China 33% revenue | 7 BEV models`;
 
 async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: string) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "x-api-key": apiKey,
@@ -93,131 +82,72 @@ async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: st
     body: JSON.stringify({
       model: agent.model,
       max_tokens: 200,
-      system: `${agent.systemPrompt}\n\nBMW STRATEGIC LEDGER:\n${LEDGER_CONTEXT}`,
+      system: `${agent.systemPrompt}\n\n${LEDGER}`,
       messages: [{ role: "user", content: userContent }],
     }),
   });
-
-  if (!response.ok) {
-    const status = response.status;
-    const text = await response.text();
-    console.error(`Agent ${agent.role} (${agent.model}) Anthropic error:`, status, text);
-    if (status === 429) return { content: `[RATE LIMITED] Agent temporarily unavailable.`, error: true };
-    return { content: `[ERROR] Agent failed (${status}).`, error: true };
+  if (!res.ok) {
+    const t = await res.text();
+    console.error(`Anthropic ${agent.role} (${agent.model}) error ${res.status}:`, t);
+    return { content: `[ERROR] Claude agent failed (${res.status}). ${t.slice(0, 100)}`, error: true };
   }
-
-  const data = await response.json();
-  const content = data.content?.[0]?.text || "[No response generated]";
-  return { content: content.trim(), error: false };
+  const data = await res.json();
+  return { content: (data.content?.[0]?.text || "[No response]").trim(), error: false };
 }
 
 async function callGemini(agent: AgentConfig, userContent: string, apiKey: string) {
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: agent.model,
       messages: [
-        { role: "system", content: `${agent.systemPrompt}\n\nBMW STRATEGIC LEDGER:\n${LEDGER_CONTEXT}` },
+        { role: "system", content: `${agent.systemPrompt}\n\n${LEDGER}` },
         { role: "user", content: userContent },
       ],
       max_tokens: 200,
     }),
   });
-
-  if (!response.ok) {
-    const status = response.status;
-    const text = await response.text();
-    console.error(`Agent ${agent.role} (${agent.model}) Gateway error:`, status, text);
-    if (status === 429) return { content: `[RATE LIMITED] Agent temporarily unavailable.`, error: true };
-    if (status === 402) return { content: `[CREDITS EXHAUSTED] Add funds at Settings > Workspace > Usage.`, error: true };
-    return { content: `[ERROR] Agent failed (${status}).`, error: true };
+  if (!res.ok) {
+    const t = await res.text();
+    console.error(`Gemini ${agent.role} (${agent.model}) error ${res.status}:`, t);
+    return { content: `[ERROR] Gemini agent failed (${res.status}).`, error: true };
   }
-
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content || "[No response generated]";
-  return { content: content.trim(), error: false };
+  const data = await res.json();
+  return { content: (data.choices?.[0]?.message?.content || "[No response]").trim(), error: false };
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { scenario, previousMessages, userDirective } = await req.json();
-
     if (!scenario) {
-      return new Response(
-        JSON.stringify({ error: "Scenario is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Scenario required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "LOVABLE_API_KEY is not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const LOVABLE_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const CLAUDE_KEY = Deno.env.get("Claude_AI");
+    if (!LOVABLE_KEY) return new Response(JSON.stringify({ error: "LOVABLE_API_KEY missing" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!CLAUDE_KEY) return new Response(JSON.stringify({ error: "Claude_AI secret missing" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const CLAUDE_API_KEY = Deno.env.get("Claude_AI");
-    if (!CLAUDE_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "Claude_AI secret is not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const thread = (previousMessages || []).map((m: { role: string; content: string }) => `[${m.role}]: ${m.content}`).join("\n");
+    const directive = userDirective ? `\nDIRECTIVE: ${userDirective.directive} (Target: ${userDirective.targetRole})` : "";
 
-    const narrativeThread = (previousMessages || [])
-      .map((m: { role: string; content: string }) => `[${m.role}]: ${m.content}`)
-      .join("\n");
+    const results = await Promise.all(AGENTS.map(async (agent) => {
+      const isTarget = userDirective?.targetRole === agent.role;
+      const prompt = `SCENARIO: ${scenario}\n${thread ? `DISCUSSION:\n${thread}\n` : ""}${directive}${isTarget ? `\n⚡ DIRECT DIRECTIVE TO YOU: "${userDirective.directive}". Incorporate this.` : ""}\nRespond as ${agent.role}. Challenge others. Max 60 words. Cite sources.`;
 
-    const directiveNote = userDirective
-      ? `\n\nIMPORTANT DIRECTIVE FROM THE BOARD CHAIR: ${userDirective.directive} (Directed at: ${userDirective.targetRole})`
-      : "";
+      const result = agent.provider === "anthropic"
+        ? await callAnthropic(agent, prompt, CLAUDE_KEY)
+        : await callGemini(agent, prompt, LOVABLE_KEY);
 
-    const agentPromises = AGENTS.map(async (agent) => {
-      const isDirectiveTarget = userDirective && userDirective.targetRole === agent.role;
+      return { role: agent.role, model: agent.model, provider: agent.provider, content: result.content, error: result.error };
+    }));
 
-      const userContent = `SCENARIO FOR BOARD DEBATE: ${scenario}
-
-${narrativeThread ? `PREVIOUS DISCUSSION:\n${narrativeThread}\n` : ""}${directiveNote}
-
-${isDirectiveTarget ? `\n⚡ YOU HAVE RECEIVED A DIRECT DIRECTIVE: "${userDirective.directive}". You MUST incorporate this constraint into your response and acknowledge it.` : ""}
-
-Provide your position as ${agent.role} (${agent.name}). Challenge the previous speakers where your KPIs conflict with their proposals. Be specific with numbers and data. Remember: max 60 words, end claims with [Source: Ledger] or [Source: Analysis].`;
-
-      let result;
-      if (agent.provider === "anthropic") {
-        result = await callAnthropic(agent, userContent, CLAUDE_API_KEY);
-      } else {
-        result = await callGemini(agent, userContent, LOVABLE_API_KEY);
-      }
-
-      return {
-        role: agent.role,
-        model: agent.model,
-        provider: agent.provider,
-        content: result.content,
-        error: result.error,
-      };
-    });
-
-    const results = await Promise.all(agentPromises);
-
-    return new Response(JSON.stringify({ responses: results }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ responses: results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Chamber error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
