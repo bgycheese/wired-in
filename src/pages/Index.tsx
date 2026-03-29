@@ -163,7 +163,7 @@ const Index = () => {
       {/* Header */}
       <div className="h-12 bg-surface-1 border-b border-border flex items-center px-4 shrink-0">
         <div className="flex items-center gap-3">
-          <img src={bmwLogo} alt="BMW" className="h-5 w-auto opacity-70" />
+          <img src={bmwLogo} alt="BMW" className="h-7 w-auto opacity-70" />
           <div className="font-mono text-sm font-bold text-foreground tracking-[0.1em]">
             WIRED IN
           </div>
