@@ -3,14 +3,13 @@ import { toast } from 'sonner';
 import TickerTape from '@/components/TickerTape';
 import AgentRoster from '@/components/AgentRoster';
 import ChamberFloor from '@/components/ChamberFloor';
-
 import ControlBar from '@/components/ControlBar';
 import InterventionModal from '@/components/InterventionModal';
-import VotePanel from '@/components/VotePanel';
+import VotePanel, { type VoteResult } from '@/components/VotePanel';
 import { useChamberDebate } from '@/hooks/useChamberDebate';
+import { supabase } from '@/integrations/supabase/client';
 import {
   MOCK_SCENARIO,
-  MOCK_VOTES,
   type AgentRole,
   type ChamberMessage,
 } from '@/lib/agents';
@@ -20,6 +19,9 @@ const Index = () => {
   const [isDebating, setIsDebating] = useState(false);
   const [showIntervention, setShowIntervention] = useState(false);
   const [showVotes, setShowVotes] = useState(false);
+  const [votes, setVotes] = useState<VoteResult[]>([]);
+  const [verdict, setVerdict] = useState('');
+  const [isVoting, setIsVoting] = useState(false);
   const [scenario, setScenario] = useState(MOCK_SCENARIO);
   const [scenarioInput, setScenarioInput] = useState('');
   const [showScenarioInput, setShowScenarioInput] = useState(true);
@@ -40,6 +42,8 @@ const Index = () => {
     setIsDebating(true);
     setMessages([]);
     setShowVotes(false);
+    setVotes([]);
+    setVerdict('');
     roundRef.current += 1;
 
     const newMessages = await runDebateRound(activeScenario, []);
@@ -59,8 +63,33 @@ const Index = () => {
     setIsDebating(false);
   };
 
+  const handleCallVote = async () => {
+    if (isVoting || messages.length === 0) return;
+    setShowVotes(true);
+    setIsVoting(true);
+    setVotes([]);
+    setVerdict('');
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('chamber-vote', {
+        body: {
+          scenario,
+          messages: messages.map(m => ({ role: m.role, content: m.content })),
+        },
+      });
+
+      if (fnError) throw new Error(fnError.message);
+
+      setVotes(data.votes || []);
+      setVerdict(data.verdict || 'UNDETERMINED');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Vote failed');
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
   const handleIntervene = async (role: AgentRole, directive: string) => {
-    // Add intervention marker
     const marker: ChamberMessage = {
       id: `int-${Date.now()}`,
       role,
@@ -70,7 +99,6 @@ const Index = () => {
     };
     setMessages(prev => [...prev, marker]);
 
-    // Run new round with directive
     setIsDebating(true);
     const newMessages = await runDebateRound(scenario, messages, { targetRole: role, directive });
     if (newMessages.length > 0) {
@@ -82,6 +110,8 @@ const Index = () => {
   const handleReset = () => {
     setMessages([]);
     setShowVotes(false);
+    setVotes([]);
+    setVerdict('');
     setIsDebating(false);
     setShowScenarioInput(true);
   };
@@ -153,13 +183,13 @@ const Index = () => {
               </button>
             </div>
             <div className="font-mono text-[9px] text-muted-foreground/50 mt-4">
-              6 agents • 3× Anthropic (Claude Opus 4, Sonnet 4, Haiku 4) • 3× Google (Gemini 2.5 Pro, 3.1 Pro, 3 Flash) • Parallel execution
+              6 agents • 3× Anthropic (Claude Opus 4, Sonnet 4, Haiku 4.5) • 3× Google (Gemini 3 Flash) • Parallel execution
             </div>
           </div>
         </div>
       )}
 
-      {/* Main content (hidden when scenario input shown) */}
+      {/* Main content */}
       {!showScenarioInput && (
         <>
           <div className="flex-1 flex min-h-0">
@@ -170,15 +200,14 @@ const Index = () => {
                 scenario={scenario}
                 isDebating={isLoading}
               />
-              <VotePanel votes={MOCK_VOTES} visible={showVotes} />
+              <VotePanel votes={votes} verdict={verdict} visible={showVotes} isLoading={isVoting} />
             </div>
-            
           </div>
 
           <ControlBar
             isDebating={isLoading}
             onIntervene={() => setShowIntervention(true)}
-            onVote={() => setShowVotes(v => !v)}
+            onVote={handleCallVote}
             onToggleDebate={() => {
               if (isLoading) return;
               continueDebate();
