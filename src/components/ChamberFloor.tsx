@@ -13,10 +13,10 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
     <div className="flex-1 flex flex-col min-h-0">
       {/* Scenario header */}
       <div className="px-4 py-3 bg-surface-2 border-b border-border">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
+        <div className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/60 mb-1">
           Active Scenario
         </div>
-        <div className="font-mono text-sm text-gold leading-tight">
+        <div className="font-mono text-base text-gold leading-tight">
           {scenario}
         </div>
       </div>
@@ -36,12 +36,12 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
               >
                 <div className="flex items-start gap-2 py-2 group">
                   {/* Timestamp */}
-                  <span className="text-muted-foreground shrink-0 text-[11px] pt-0.5 opacity-60">
+                  <span className="text-foreground/40 shrink-0 text-xs pt-0.5">
                     {msg.timestamp.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
 
                   {/* Role tag */}
-                  <span className={`shrink-0 font-bold ${agent.color} min-w-[4rem]`}>
+                  <span className={`shrink-0 font-bold text-sm ${agent.color} min-w-[4rem]`}>
                     [{msg.role}]
                   </span>
 
@@ -51,13 +51,13 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                   )}
 
                   {/* Content */}
-                  <span className="text-foreground/90">
+                  <span className="text-foreground text-sm">
                     {msg.content}
-                    <span className="text-muted-foreground/60 ml-2 text-[11px]">
+                    <span className="text-foreground/40 ml-2 text-xs">
                       [{msg.source}]
                     </span>
                     {msg.model && (
-                      <span className="text-bmw-blue/60 ml-2 text-[11px] font-medium">
+                      <span className="text-bmw-blue/70 ml-2 text-xs font-medium">
                         via {msg.model}
                       </span>
                     )}
@@ -74,10 +74,10 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
             animate={{ opacity: 1 }}
             className="flex items-center gap-2 py-2 font-mono text-xs"
           >
-            <span className="text-muted-foreground text-[10px]">
+            <span className="text-foreground/40 text-xs">
               {new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </span>
-            <span className="text-gold-dim animate-pulse-glow">▮ AGENTS DELIBERATING...</span>
+            <span className="text-gold-dim animate-pulse-glow text-sm">▮ AGENTS DELIBERATING...</span>
           </motion.div>
         )}
       </div>

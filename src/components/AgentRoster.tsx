@@ -4,7 +4,7 @@ const AgentRoster = () => {
   return (
     <div className="border-r border-border bg-surface-1 w-52 flex flex-col shrink-0">
       <div className="px-3 py-2 border-b border-border">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/70">
           Board Members
         </div>
       </div>
@@ -18,14 +18,14 @@ const AgentRoster = () => {
                 <div className="w-1.5 h-1.5 rounded-full bg-terminal-green" />
                 <span className={`font-mono text-xs font-bold ${agent.color}`}>{role}</span>
               </div>
-              <div className="font-mono text-[10px] text-foreground/70 pl-3.5">{agent.name}</div>
-              <div className="font-mono text-[9px] text-muted-foreground pl-3.5 mt-0.5">{agent.focus}</div>
-              <div className="font-mono text-[8px] pl-3.5 mt-0.5">
-                <span className={agent.provider === 'Anthropic' ? 'text-terminal-amber/60' : 'text-bmw-blue/60'}>
+              <div className="font-mono text-xs text-foreground/80 pl-3.5">{agent.name}</div>
+              <div className="font-mono text-[11px] text-foreground/50 pl-3.5 mt-0.5">{agent.focus}</div>
+              <div className="font-mono text-[10px] pl-3.5 mt-0.5">
+                <span className={agent.provider === 'Anthropic' ? 'text-terminal-amber/70' : 'text-bmw-blue/70'}>
                   {agent.provider}
                 </span>
-                <span className="text-muted-foreground/40"> / </span>
-                <span className="text-muted-foreground/50">{agent.model}</span>
+                <span className="text-foreground/30"> / </span>
+                <span className="text-foreground/40">{agent.model}</span>
               </div>
             </div>
           );
@@ -34,7 +34,7 @@ const AgentRoster = () => {
 
       {/* Session info */}
       <div className="px-3 py-2 border-t border-border">
-        <div className="font-mono text-[9px] text-muted-foreground space-y-0.5">
+        <div className="font-mono text-[11px] text-foreground/40 space-y-0.5">
           <div>SESSION: #0042</div>
           <div>PROTOCOL: v2.1</div>
           <div>LEDGER: 10Y LOADED</div>

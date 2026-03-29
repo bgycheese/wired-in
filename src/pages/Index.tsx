@@ -10,9 +10,13 @@ import { useChamberDebate } from '@/hooks/useChamberDebate';
 import { supabase } from '@/integrations/supabase/client';
 import {
   MOCK_SCENARIO,
+  AGENTS,
+  AGENT_ORDER,
   type AgentRole,
   type ChamberMessage,
 } from '@/lib/agents';
+import bmwLogo from '@/assets/bmw-logo.png';
+import { Download } from 'lucide-react';
 
 const Index = () => {
   const [messages, setMessages] = useState<ChamberMessage[]>([]);
@@ -116,6 +120,38 @@ const Index = () => {
     setShowScenarioInput(true);
   };
 
+  const handleDownloadReport = () => {
+    if (messages.length === 0) return;
+    let report = `WIRED IN — BMW Board Intelligence Report\n`;
+    report += `Generated: ${new Date().toLocaleString()}\n`;
+    report += `${'='.repeat(60)}\n\n`;
+    report += `SCENARIO:\n${scenario}\n\n`;
+    report += `${'='.repeat(60)}\n`;
+    report += `DEBATE TRANSCRIPT\n`;
+    report += `${'='.repeat(60)}\n\n`;
+    messages.forEach(msg => {
+      const agent = AGENTS[msg.role];
+      report += `[${msg.timestamp.toLocaleTimeString('en-US', { hour12: false })}] ${msg.role} (${agent.name}):\n`;
+      report += `${msg.content}\n\n`;
+    });
+    if (votes.length > 0) {
+      report += `${'='.repeat(60)}\n`;
+      report += `BOARD VOTE\n`;
+      report += `${'='.repeat(60)}\n\n`;
+      votes.forEach(v => {
+        report += `${v.role}: ${v.position} — ${v.stance}\n`;
+      });
+      report += `\nVERDICT: ${verdict}\n`;
+    }
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `wired-in-report-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleScenarioSubmit = () => {
     const s = scenarioInput.trim();
     if (s) {
@@ -127,18 +163,28 @@ const Index = () => {
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Header */}
-      <div className="h-10 bg-surface-1 border-b border-border flex items-center px-4 shrink-0">
+      <div className="h-12 bg-surface-1 border-b border-border flex items-center px-4 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="font-mono text-xs font-bold text-gold tracking-[0.1em]">
-            THE CHAMBER
+          <img src={bmwLogo} alt="BMW" className="w-7 h-7 opacity-70" />
+          <div className="font-mono text-sm font-bold text-foreground tracking-[0.1em]">
+            WIRED IN
           </div>
-          <div className="w-px h-4 bg-border" />
-          <div className="font-mono text-[10px] text-muted-foreground tracking-[0.15em] uppercase">
-            BMW Board Intelligence System
+          <div className="w-px h-5 bg-border" />
+          <div className="font-mono text-xs text-foreground/60 tracking-[0.15em] uppercase">
+            BMW Board Intelligence
           </div>
         </div>
         <div className="flex-1" />
-        <div className="font-mono text-[10px] text-muted-foreground">
+        {messages.length > 0 && !showScenarioInput && (
+          <button
+            onClick={handleDownloadReport}
+            className="flex items-center gap-1.5 px-3 py-1.5 mr-4 font-mono text-xs border border-border rounded-sm text-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Download Report
+          </button>
+        )}
+        <div className="font-mono text-xs text-foreground/50">
           {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
           {' '}
           {new Date().toLocaleTimeString('en-US', { hour12: false })}
@@ -152,14 +198,14 @@ const Index = () => {
       {showScenarioInput && (
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-2xl px-8">
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/70 mb-3">
+            <div className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/80 mb-3">
               Initialize Board Scenario
             </div>
             <textarea
               value={scenarioInput}
               onChange={(e) => setScenarioInput(e.target.value)}
               placeholder={MOCK_SCENARIO}
-              className="w-full bg-surface-1 border border-border rounded-sm px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-gold resize-none h-24"
+              className="w-full bg-surface-1 border border-border rounded-sm px-4 py-3 font-mono text-base text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-gold resize-none h-24"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -171,13 +217,13 @@ const Index = () => {
               <button
                 onClick={handleScenarioSubmit}
                 disabled={!scenarioInput.trim()}
-                className="px-4 py-2 bg-gold/10 border border-gold text-gold font-mono text-[10px] uppercase tracking-[0.15em] rounded-sm hover:bg-gold/20 transition-colors disabled:opacity-30"
+                className="px-4 py-2.5 bg-gold/10 border border-gold text-gold font-mono text-xs uppercase tracking-[0.15em] rounded-sm hover:bg-gold/20 transition-colors disabled:opacity-30"
               >
                 Initiate Debate
               </button>
               <button
                 onClick={() => startDebate(MOCK_SCENARIO)}
-                className="px-4 py-2 border border-border text-foreground/60 font-mono text-[10px] uppercase tracking-[0.15em] rounded-sm hover:text-foreground hover:border-muted-foreground transition-colors"
+                className="px-4 py-2.5 border border-border text-foreground/60 font-mono text-xs uppercase tracking-[0.15em] rounded-sm hover:text-foreground hover:border-foreground/40 transition-colors"
               >
                 Use Default Scenario
               </button>

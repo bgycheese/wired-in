@@ -41,7 +41,7 @@ const VotePanel = ({ votes, verdict, visible, isLoading }: VotePanelProps) => {
         >
           {/* Header */}
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-            <div className="font-mono text-xs uppercase tracking-[0.15em] text-gold font-semibold">
+            <div className="font-mono text-sm uppercase tracking-[0.15em] text-gold font-semibold">
               Board Vote
             </div>
             {!isLoading && votes.length > 0 && (
@@ -63,7 +63,7 @@ const VotePanel = ({ votes, verdict, visible, isLoading }: VotePanelProps) => {
           {isLoading && (
             <div className="px-4 py-8 flex items-center justify-center gap-3">
               <Loader2 className="w-4 h-4 text-gold animate-spin" />
-              <span className="font-mono text-sm text-muted-foreground">Agents casting votes...</span>
+              <span className="font-mono text-sm text-foreground/60">Agents casting votes...</span>
             </div>
           )}
 
@@ -91,7 +91,7 @@ const VotePanel = ({ votes, verdict, visible, isLoading }: VotePanelProps) => {
                     </span>
 
                     {/* Stance */}
-                    <span className="font-mono text-sm text-foreground/85 flex-1">
+                    <span className="font-mono text-sm text-foreground flex-1">
                       {vote.stance}
                     </span>
                   </motion.div>
@@ -100,8 +100,8 @@ const VotePanel = ({ votes, verdict, visible, isLoading }: VotePanelProps) => {
 
               {/* Verdict */}
               <div className="mt-3 pt-3 border-t border-border text-center">
-                <span className="font-mono text-xs text-muted-foreground mr-2">VERDICT:</span>
-                <span className={`font-mono text-sm font-bold ${verdictColor(verdict)}`}>{verdict}</span>
+                <span className="font-mono text-sm text-foreground/60 mr-2">VERDICT:</span>
+                <span className={`font-mono text-base font-bold ${verdictColor(verdict)}`}>{verdict}</span>
               </div>
             </div>
           )}

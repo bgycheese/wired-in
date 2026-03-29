@@ -8,7 +8,7 @@ const TickerTape = () => {
       <div className="absolute inset-0 flex items-center">
         <div className="animate-ticker flex whitespace-nowrap">
           {doubled.map((item, i) => (
-            <span key={i} className="font-mono text-xs px-6">
+            <span key={i} className="font-mono text-sm px-6">
               <span className={
                 item.includes('▲') ? 'text-terminal-green' :
                 item.includes('▼') ? 'text-terminal-red' :
