@@ -62,10 +62,10 @@ async function callGemini(model: string, prompt: string, apiKey: string) {
 
 function parseVote(raw: string | null): { position: string; stance: string } {
   if (!raw) return { position: "CONDITIONAL", stance: "Unable to determine position." };
-  const posMatch = raw.match(/POSITION:\s*(FOR|AGAINST|CONDITIONAL)/i);
+  const posMatch = raw.match(/POSITION:\s*(FOR|AGAINST|CONDITIONAL|OPINION)/i);
   const stanceMatch = raw.match(/STANCE:\s*(.+)/i);
   return {
-    position: posMatch ? posMatch[1].toUpperCase() : "CONDITIONAL",
+    position: posMatch ? posMatch[1].toUpperCase() : "OPINION",
     stance: stanceMatch ? stanceMatch[1].trim() : raw.slice(0, 120),
   };
 }
