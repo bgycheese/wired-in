@@ -73,4 +73,4 @@ simulating how different stakeholders would weigh in before a real panel intervi
 
 ## Website
 
-https://chamber-chiefs.com/
+https://www.chamber-chiefs.com/
