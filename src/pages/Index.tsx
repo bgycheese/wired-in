@@ -154,10 +154,8 @@ const Index = () => {
 
   const handleScenarioSubmit = () => {
     const s = scenarioInput.trim();
-    if (s) {
-      startDebate(s);
-      setScenarioInput('');
-    }
+    startDebate(s || MOCK_SCENARIO);
+    setScenarioInput('');
   };
 
   return (
