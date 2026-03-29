@@ -182,7 +182,7 @@ const Index = () => {
                 Use Default Scenario
               </button>
             </div>
-            <div className="font-mono text-[9px] text-muted-foreground/50 mt-4">
+            <div className="font-mono text-xs text-muted-foreground mt-4">
               6 agents • 3× Anthropic (Claude Opus 4, Sonnet 4, Haiku 4.5) • 3× Google (Gemini 3 Flash) • Parallel execution
             </div>
           </div>
