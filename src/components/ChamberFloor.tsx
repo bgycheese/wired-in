@@ -61,7 +61,7 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                         via {msg.model}
                       </span>
                     )}
-                  </span>
+                  </div>
                 </div>
               </motion.div>
             );
