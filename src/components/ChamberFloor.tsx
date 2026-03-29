@@ -51,8 +51,8 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                   )}
 
                   {/* Content */}
-                  <span className="text-foreground text-sm">
-                    {msg.content}
+                  <div className="text-foreground text-sm flex-1">
+                    <FormattedContent text={msg.content} />
                     <span className="text-foreground/40 ml-2 text-xs">
                       [{msg.source}]
                     </span>
