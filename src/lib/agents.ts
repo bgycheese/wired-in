@@ -7,7 +7,7 @@ export interface Agent {
   kpi: string;
   color: string;
   model: string;
-  provider: 'OpenAI' | 'Google';
+  provider: 'Anthropic' | 'Google';
 }
 
 export const AGENTS: Record<AgentRole, Agent> = {
@@ -17,8 +17,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Strategy & Vision',
     kpi: 'Brand Value / Technology Neutrality',
     color: 'text-gold',
-    model: 'gpt-5.2',
-    provider: 'OpenAI',
+    model: 'claude-sonnet-4',
+    provider: 'Anthropic',
   },
   CTO: {
     role: 'CTO',
@@ -35,8 +35,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Capital & Risk',
     kpi: 'EBIT 8-10% / CapEx Efficiency',
     color: 'text-terminal-green',
-    model: 'gpt-5',
-    provider: 'OpenAI',
+    model: 'claude-opus-4',
+    provider: 'Anthropic',
   },
   COO: {
     role: 'COO',
@@ -53,8 +53,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Culture & People',
     kpi: 'EV Skill Gap / BMW Way',
     color: 'text-purple-400',
-    model: 'gpt-5-mini',
-    provider: 'OpenAI',
+    model: 'claude-haiku-4',
+    provider: 'Anthropic',
   },
   CSO: {
     role: 'CSO',
