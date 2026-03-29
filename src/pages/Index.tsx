@@ -15,7 +15,7 @@ import {
   type AgentRole,
   type ChamberMessage,
 } from '@/lib/agents';
-import bmwLogo from '@/assets/bmw-logo.png';
+import bmwLogo from '@/assets/bmw-group-logo.png';
 import { Download } from 'lucide-react';
 
 const Index = () => {
