@@ -152,7 +152,7 @@ const Index = () => {
       {showScenarioInput && (
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-2xl px-8">
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/70 mb-3">
               Initialize Board Scenario
             </div>
             <textarea
