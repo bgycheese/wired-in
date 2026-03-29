@@ -97,9 +97,21 @@ serve(async (req) => {
     }));
 
     // Determine verdict
+    const opinionCount = results.filter(r => r.position === "OPINION").length;
     const forCount = results.filter(r => r.position === "FOR").length;
     const againstCount = results.filter(r => r.position === "AGAINST").length;
-    const verdict = forCount > againstCount ? "MOTION APPROVED" : forCount === againstCount ? "DEADLOCKED" : "MOTION REJECTED";
+
+    let verdict: string;
+    if (opinionCount > results.length / 2) {
+      // Open-ended question — check if stances align
+      verdict = "NO MAJORITY CONSENSUS — INDIVIDUAL OPINIONS LOGGED";
+    } else if (forCount > againstCount) {
+      verdict = "MOTION APPROVED";
+    } else if (againstCount > forCount) {
+      verdict = "MOTION REJECTED";
+    } else {
+      verdict = "DEADLOCKED";
+    }
 
     return new Response(JSON.stringify({ votes: results, verdict }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
