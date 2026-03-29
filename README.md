@@ -71,6 +71,6 @@ of hiring decisions — surfacing blind spots, stress-testing candidate fit, and
 simulating how different stakeholders would weigh in before a real panel interview.
 
 
-## Webstie
+## Website
 
 https://chamber-chiefs.com/
