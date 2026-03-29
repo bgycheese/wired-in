@@ -53,11 +53,11 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                   {/* Content */}
                   <span className="text-foreground/90">
                     {msg.content}
-                    <span className="text-muted-foreground ml-2 text-[10px]">
+                    <span className="text-muted-foreground/60 ml-2 text-[11px]">
                       [{msg.source}]
                     </span>
                     {msg.model && (
-                      <span className="text-muted-foreground/40 ml-1 text-[9px]">
+                      <span className="text-bmw-blue/60 ml-2 text-[11px] font-medium">
                         via {msg.model}
                       </span>
                     )}
