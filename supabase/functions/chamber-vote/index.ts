@@ -23,16 +23,20 @@ const AGENTS: AgentConfig[] = [
 ];
 
 const VOTE_PROMPT = (role: string, scenario: string, debate: string) =>
-  `You are a BMW Board member (${role}). Based on this scenario and debate, cast your final vote.
+  `You are a BMW Board member (${role}). Based on this scenario and debate, give your final position.
 
 SCENARIO: ${scenario}
 
 DEBATE SUMMARY:
 ${debate}
 
-Respond ONLY in this exact format (no other text):
+If the scenario is a yes/no decision, respond in this format:
 POSITION: FOR or AGAINST or CONDITIONAL
-STANCE: [One clear sentence explaining your position, max 25 words]`;
+STANCE: [One clear sentence, max 25 words]
+
+If the scenario is an open-ended question (not yes/no), respond in this format:
+POSITION: OPINION
+STANCE: [Your concise recommendation or answer in one sentence, max 30 words]`;
 
 async function callAnthropic(model: string, prompt: string, apiKey: string) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
