@@ -14,7 +14,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
       {/* Status */}
       <div className="flex items-center gap-2 mr-4">
         <div className={`w-1.5 h-1.5 rounded-full ${isDebating ? 'bg-terminal-green animate-pulse-glow' : 'bg-muted-foreground'}`} />
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+        <span className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/60">
           {isDebating ? 'LIVE SESSION' : 'PAUSED'}
         </span>
       </div>
@@ -24,7 +24,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
       {/* Controls */}
       <button
         onClick={onToggleDebate}
-        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] border border-border rounded-sm text-muted-foreground hover:text-foreground hover:border-muted-foreground transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] border border-border rounded-sm text-foreground/60 hover:text-foreground hover:border-foreground/40 transition-colors"
       >
         {isDebating ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
         {isDebating ? 'Processing...' : 'Next Round'}
@@ -32,7 +32,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
 
       <button
         onClick={onIntervene}
-        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] border border-gold/50 rounded-sm text-gold hover:bg-gold/10 transition-colors glow-gold"
+        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] border border-gold/50 rounded-sm text-gold hover:bg-gold/10 transition-colors glow-gold"
       >
         <Zap className="w-3 h-3" />
         Intervene
@@ -40,7 +40,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
 
       <button
         onClick={onVote}
-        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] border border-bmw-blue/50 rounded-sm text-bmw-blue hover:bg-bmw-blue/10 transition-colors glow-blue"
+        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] border border-bmw-blue/50 rounded-sm text-bmw-blue hover:bg-bmw-blue/10 transition-colors glow-blue"
       >
         <Vote className="w-3 h-3" />
         Call Vote
@@ -48,7 +48,7 @@ const ControlBar = ({ isDebating, onIntervene, onVote, onToggleDebate, onReset }
 
       <button
         onClick={onReset}
-        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] border border-border rounded-sm text-muted-foreground hover:text-foreground hover:border-muted-foreground transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] border border-border rounded-sm text-foreground/60 hover:text-foreground hover:border-foreground/40 transition-colors"
       >
         <RotateCcw className="w-3 h-3" />
         Reset
