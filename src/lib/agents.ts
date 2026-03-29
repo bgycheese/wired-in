@@ -6,6 +6,8 @@ export interface Agent {
   focus: string;
   kpi: string;
   color: string;
+  model: string;
+  provider: 'OpenAI' | 'Google';
 }
 
 export const AGENTS: Record<AgentRole, Agent> = {
@@ -15,6 +17,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Strategy & Vision',
     kpi: 'Brand Value / Technology Neutrality',
     color: 'text-gold',
+    model: 'gpt-5.2',
+    provider: 'OpenAI',
   },
   CTO: {
     role: 'CTO',
@@ -22,6 +26,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'R&D / Technology',
     kpi: 'Neue Klasse Architecture / Software Stack',
     color: 'text-bmw-blue',
+    model: 'gemini-2.5-pro',
+    provider: 'Google',
   },
   CFO: {
     role: 'CFO',
@@ -29,6 +35,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Capital & Risk',
     kpi: 'EBIT 8-10% / CapEx Efficiency',
     color: 'text-terminal-green',
+    model: 'gpt-5',
+    provider: 'OpenAI',
   },
   COO: {
     role: 'COO',
@@ -36,6 +44,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Production & Supply',
     kpi: 'iFactory Flex / Energy Costs',
     color: 'text-terminal-amber',
+    model: 'gemini-3.1-pro',
+    provider: 'Google',
   },
   CHRO: {
     role: 'CHRO',
@@ -43,6 +53,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Culture & People',
     kpi: 'EV Skill Gap / BMW Way',
     color: 'text-purple-400',
+    model: 'gpt-5-mini',
+    provider: 'OpenAI',
   },
   CSO: {
     role: 'CSO',
@@ -50,6 +62,8 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Sales & Markets',
     kpi: 'China Volatility / Premium Pricing',
     color: 'text-cyan-400',
+    model: 'gemini-3-flash',
+    provider: 'Google',
   },
 };
 
