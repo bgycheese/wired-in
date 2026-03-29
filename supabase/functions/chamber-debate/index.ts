@@ -1,4 +1,4 @@
-// Chamber Debate v3 - Claude + Gemini agents - forced redeploy
+// Chamber Debate v4 - Fixed Haiku model ID to claude-haiku-4-5-20251001
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
