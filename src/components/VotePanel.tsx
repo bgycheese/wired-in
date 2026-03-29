@@ -18,12 +18,14 @@ interface VotePanelProps {
 const positionBadge = (pos: string) => {
   if (pos === 'FOR') return 'bg-terminal-green/15 text-terminal-green border-terminal-green/30';
   if (pos === 'AGAINST') return 'bg-terminal-red/15 text-terminal-red border-terminal-red/30';
+  if (pos === 'OPINION') return 'bg-bmw-blue/15 text-bmw-blue border-bmw-blue/30';
   return 'bg-terminal-amber/15 text-terminal-amber border-terminal-amber/30';
 };
 
 const verdictColor = (v: string) => {
   if (v.includes('APPROVED')) return 'text-terminal-green';
   if (v.includes('REJECTED')) return 'text-terminal-red';
+  if (v.includes('CONSENSUS')) return 'text-bmw-blue';
   return 'text-terminal-amber';
 };
 
@@ -44,9 +46,15 @@ const VotePanel = ({ votes, verdict, visible, isLoading }: VotePanelProps) => {
             </div>
             {!isLoading && votes.length > 0 && (
               <div className="flex gap-4 font-mono text-xs">
-                <span className="text-terminal-green">{votes.filter(v => v.position === 'FOR').length} FOR</span>
-                <span className="text-terminal-red">{votes.filter(v => v.position === 'AGAINST').length} AGAINST</span>
-                <span className="text-terminal-amber">{votes.filter(v => v.position === 'CONDITIONAL').length} COND</span>
+                {votes.some(v => v.position === 'FOR' || v.position === 'AGAINST') ? (
+                  <>
+                    <span className="text-terminal-green">{votes.filter(v => v.position === 'FOR').length} FOR</span>
+                    <span className="text-terminal-red">{votes.filter(v => v.position === 'AGAINST').length} AGAINST</span>
+                    <span className="text-terminal-amber">{votes.filter(v => v.position === 'CONDITIONAL').length} COND</span>
+                  </>
+                ) : (
+                  <span className="text-bmw-blue">{votes.length} OPINIONS</span>
+                )}
               </div>
             )}
           </div>
