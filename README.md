@@ -59,7 +59,7 @@ At the end of the debate, the board reaches a verdict.
 |-------|-----------|
 | Frontend & UI | Lovable |
 | Database & Auth | Supabase |
-| Agent Reasoning | Claude API | Gemini AI |
+| Agent Reasoning | Claude API ,Gemini AI |
 | Live Data | Web Search |
 
 ---
