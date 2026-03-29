@@ -1,4 +1,4 @@
-# Chamber Chiefs
+# Wired In
 
 > A live AI-powered debate webapp where C-level executive agents evaluate 
 > potential hires — informed by real-time data — and collectively reach a hiring decision.
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Chamber Chiefs simulates a corporate boardroom deliberation. HR professionals 
+Wired In simulates a corporate boardroom deliberation. HR professionals 
 submit a hiring scenario — a candidate profile, a role, a department challenge — 
 and six AI agents, each embodying a distinct C-level executive, debate the hire 
 in sequence. Each agent reads the full conversation history before responding, 
