@@ -32,11 +32,11 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="font-mono text-xs leading-relaxed"
+                className="font-mono text-sm leading-relaxed"
               >
                 <div className="flex items-start gap-2 py-2 group">
                   {/* Timestamp */}
-                  <span className="text-muted-foreground shrink-0 text-[10px] pt-0.5 opacity-50">
+                  <span className="text-muted-foreground shrink-0 text-[11px] pt-0.5 opacity-60">
                     {msg.timestamp.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
 
@@ -51,7 +51,7 @@ const ChamberFloor = ({ messages, scenario, isDebating }: ChamberFloorProps) => 
                   )}
 
                   {/* Content */}
-                  <span className="text-foreground">
+                  <span className="text-foreground/90">
                     {msg.content}
                     <span className="text-muted-foreground ml-2 text-[10px]">
                       [{msg.source}]

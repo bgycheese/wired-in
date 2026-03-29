@@ -26,7 +26,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'R&D / Technology',
     kpi: 'Neue Klasse Architecture / Software Stack',
     color: 'text-bmw-blue',
-    model: 'gemini-2.5-pro',
+    model: 'gemini-3-flash',
     provider: 'Google',
   },
   CFO: {
@@ -44,7 +44,7 @@ export const AGENTS: Record<AgentRole, Agent> = {
     focus: 'Production & Supply',
     kpi: 'iFactory Flex / Energy Costs',
     color: 'text-terminal-amber',
-    model: 'gemini-3.1-pro',
+    model: 'gemini-3-flash',
     provider: 'Google',
   },
   CHRO: {

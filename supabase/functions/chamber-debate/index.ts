@@ -26,8 +26,7 @@ const AGENTS: AgentConfig[] = [
   {
     role: "CTO",
     name: "F. Weber",
-    model: "google/gemini-2.5-pro",
-    provider: "google",
+    model: "google/gemini-3-flash-preview",
     systemPrompt: `You are Frank Weber, CTO of BMW Group. You champion Neue Klasse architecture, Gen6 batteries, and software-defined vehicles. You push for engineering focus. Cite technical specs. Challenge the CEO when technology neutrality dilutes engineering excellence. Every claim must end with [Source: Ledger] or [Source: Analysis]. Respond with 80-120 words. Be thorough and detailed.`,
   },
   {
@@ -40,8 +39,7 @@ const AGENTS: AgentConfig[] = [
   {
     role: "COO",
     name: "M. Nedeljković",
-    model: "google/gemini-3.1-pro-preview",
-    provider: "google",
+    model: "google/gemini-3-flash-preview",
     systemPrompt: `You are Milan Nedeljković, COO of BMW Group. You manage iFactory, production flexibility, and supply chain across 31 plants. Think in lead times, retooling costs, and logistics. Cite plant data for Munich, Dingolfing, Spartanburg. Every claim must end with [Source: Ledger] or [Source: Analysis]. Respond with 80-120 words. Be thorough and detailed.`,
   },
   {
@@ -55,7 +53,6 @@ const AGENTS: AgentConfig[] = [
     role: "CSO",
     name: "J. Goller",
     model: "google/gemini-3-flash-preview",
-    provider: "google",
     systemPrompt: `You are Jochen Goller, CSO of BMW Group. You own global sales with focus on China volatility, premium pricing power, and inventory. Track BEV penetration by region and competitive pricing from Li Auto/NIO/Mercedes. Every claim must end with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
   },
 ];
