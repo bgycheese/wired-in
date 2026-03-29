@@ -8,19 +8,10 @@ const FormattedContent = ({ text }: { text: string }) => {
   // Split on numbered items or known headers to create line breaks
   const lines = text.split(/(?=\(\d+\)\s|(?:Current Assessment|Executive Order|Capability Analysis|R&D Action|Financial Audit|Margin Impact|Capital Allocation|Operational Report|Logistics|Plant Directive|Labor Risk|Talent Strategy|Workforce Impact|Region Analysis|Sales Strategy|Market Intelligence):)/i);
 
-  // Parse bold markers: **text** or *text*
+  // Strip all asterisks and render everything bold
   const parseBold = (str: string) => {
-    // First pass: **double asterisks**
-    const parts = str.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-    return parts.map((part, j) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={j} className="text-foreground font-bold">{part.slice(2, -2)}</strong>;
-      }
-      if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
-        return <strong key={j} className="text-foreground font-bold">{part.slice(1, -1)}</strong>;
-      }
-      return <React.Fragment key={j}>{part}</React.Fragment>;
-    });
+    const cleaned = str.replace(/\*+/g, '');
+    return <strong className="text-foreground font-bold">{cleaned}</strong>;
   };
 
   return (
