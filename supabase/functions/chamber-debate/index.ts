@@ -28,35 +28,35 @@ const AGENTS: AgentConfig[] = [
     name: "F. Weber",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Frank Weber, CTO of BMW Group. Give your honest take on the scenario from a technology standpoint, then propose 1-2 practical engineering actions. Keep it plain — no buzzwords or numbers. Challenge others if you disagree. End with [Source: Ledger] or [Source: Analysis]. 80-120 words.`,
+    systemPrompt: `You are Frank Weber, CTO of BMW Group. Give your honest take on the scenario from a technology standpoint, then propose 1-2 practical engineering actions. Keep it plain — no buzzwords or numbers. Challenge others if you disagree. End with [Source: Ledger] or [Source: Analysis]. 50-80 words.`,
   },
   {
     role: "CFO",
     name: "W. Mertl",
     model: "claude-opus-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Walter Mertl, CFO of BMW Group. Share your financial read on the scenario in plain language, then recommend 1-2 money-related actions. No percentages or specific figures — just directional guidance. End with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Walter Mertl, CFO of BMW Group. Share your financial read on the scenario in plain language, then recommend 1-2 money-related actions. No percentages or specific figures — just directional guidance. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
   },
   {
     role: "COO",
     name: "M. Nedeljković",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. React to the scenario from an operations and production angle, then suggest 1-2 actionable steps for factories or supply chain. Plain language, no technical specs. End with [Source: Ledger] or [Source: Analysis]. 80-120 words.`,
+    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. React to the scenario from an operations and production angle, then suggest 1-2 actionable steps for factories or supply chain. Plain language, no technical specs. End with [Source: Ledger] or [Source: Analysis]. 50-80 words.`,
   },
   {
     role: "CHRO",
     name: "I. Horstmeier",
     model: "claude-haiku-4-5-20251001",
     provider: "anthropic",
-    systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. Give your people-focused perspective on the scenario, then recommend 1-2 workforce actions. Keep it human and straightforward — no HR jargon. End with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. Give your people-focused perspective on the scenario, then recommend 1-2 workforce actions. Keep it human and straightforward — no HR jargon. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
   },
   {
     role: "CSO",
     name: "J. Goller",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Jochen Goller, CSO of BMW Group. Share your sales and market view on the scenario, then propose 1-2 commercial actions. Plain language, no market data or percentages. End with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Jochen Goller, CSO of BMW Group. Share your sales and market view on the scenario, then propose 1-2 commercial actions. Plain language, no market data or percentages. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
   },
 ];
 
@@ -81,8 +81,8 @@ async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: st
     },
     body: JSON.stringify({
       model: agent.model,
-    max_tokens: 400,
-    system: `${agent.systemPrompt}\n\n${LEDGER}`,
+      max_tokens: 400,
+      system: `${agent.systemPrompt}\n\n${LEDGER}`,
       messages: [{ role: "user", content: userContent }],
     }),
   });
@@ -123,31 +123,60 @@ serve(async (req) => {
   try {
     const { scenario, previousMessages, userDirective } = await req.json();
     if (!scenario) {
-      return new Response(JSON.stringify({ error: "Scenario required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Scenario required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const LOVABLE_KEY = Deno.env.get("LOVABLE_API_KEY");
     const CLAUDE_KEY = Deno.env.get("Claude_AI");
-    if (!LOVABLE_KEY) return new Response(JSON.stringify({ error: "LOVABLE_API_KEY missing" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (!CLAUDE_KEY) return new Response(JSON.stringify({ error: "Claude_AI secret missing" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!LOVABLE_KEY)
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY missing" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    if (!CLAUDE_KEY)
+      return new Response(JSON.stringify({ error: "Claude_AI secret missing" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
 
-    const thread = (previousMessages || []).map((m: { role: string; content: string }) => `[${m.role}]: ${m.content}`).join("\n");
-    const directive = userDirective ? `\nDIRECTIVE: ${userDirective.directive} (Target: ${userDirective.targetRole})` : "";
+    const thread = (previousMessages || [])
+      .map((m: { role: string; content: string }) => `[${m.role}]: ${m.content}`)
+      .join("\n");
+    const directive = userDirective
+      ? `\nDIRECTIVE: ${userDirective.directive} (Target: ${userDirective.targetRole})`
+      : "";
 
-    const results = await Promise.all(AGENTS.map(async (agent) => {
-      const isTarget = userDirective?.targetRole === agent.role;
-      const prompt = `SCENARIO: ${scenario}\n${thread ? `DISCUSSION:\n${thread}\n` : ""}${directive}${isTarget ? `\n⚡ DIRECT DIRECTIVE TO YOU: "${userDirective.directive}". Incorporate this.` : ""}\nRespond as ${agent.role}. Challenge others. Max 60 words. Cite sources.`;
+    const results = await Promise.all(
+      AGENTS.map(async (agent) => {
+        const isTarget = userDirective?.targetRole === agent.role;
+        const prompt = `SCENARIO: ${scenario}\n${thread ? `DISCUSSION:\n${thread}\n` : ""}${directive}${isTarget ? `\n⚡ DIRECT DIRECTIVE TO YOU: "${userDirective.directive}". Incorporate this.` : ""}\nRespond as ${agent.role}. Challenge others. Max 60 words. Cite sources.`;
 
-      const result = agent.provider === "anthropic"
-        ? await callAnthropic(agent, prompt, CLAUDE_KEY)
-        : await callGemini(agent, prompt, LOVABLE_KEY);
+        const result =
+          agent.provider === "anthropic"
+            ? await callAnthropic(agent, prompt, CLAUDE_KEY)
+            : await callGemini(agent, prompt, LOVABLE_KEY);
 
-      return { role: agent.role, model: agent.model, provider: agent.provider, content: result.content, error: result.error };
-    }));
+        return {
+          role: agent.role,
+          model: agent.model,
+          provider: agent.provider,
+          content: result.content,
+          error: result.error,
+        };
+      }),
+    );
 
-    return new Response(JSON.stringify({ responses: results }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ responses: results }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error("Chamber error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
