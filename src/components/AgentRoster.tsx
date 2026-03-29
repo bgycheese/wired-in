@@ -15,11 +15,18 @@ const AgentRoster = () => {
           return (
             <div key={role} className="px-3 py-2.5 border-b border-border/50 hover:bg-surface-2 transition-colors">
               <div className="flex items-center gap-2 mb-0.5">
-                <div className={`w-1.5 h-1.5 rounded-full bg-terminal-green`} />
+                <div className="w-1.5 h-1.5 rounded-full bg-terminal-green" />
                 <span className={`font-mono text-xs font-bold ${agent.color}`}>{role}</span>
               </div>
               <div className="font-mono text-[10px] text-foreground/70 pl-3.5">{agent.name}</div>
               <div className="font-mono text-[9px] text-muted-foreground pl-3.5 mt-0.5">{agent.focus}</div>
+              <div className="font-mono text-[8px] pl-3.5 mt-0.5">
+                <span className={agent.provider === 'OpenAI' ? 'text-terminal-green/60' : 'text-bmw-blue/60'}>
+                  {agent.provider}
+                </span>
+                <span className="text-muted-foreground/40"> / </span>
+                <span className="text-muted-foreground/50">{agent.model}</span>
+              </div>
             </div>
           );
         })}
@@ -31,6 +38,7 @@ const AgentRoster = () => {
           <div>SESSION: #0042</div>
           <div>PROTOCOL: v2.1</div>
           <div>LEDGER: 10Y LOADED</div>
+          <div>MODELS: 3× OpenAI, 3× Gemini</div>
         </div>
       </div>
     </div>
