@@ -21,7 +21,7 @@ const AgentRoster = () => {
               <div className="font-mono text-[10px] text-foreground/70 pl-3.5">{agent.name}</div>
               <div className="font-mono text-[9px] text-muted-foreground pl-3.5 mt-0.5">{agent.focus}</div>
               <div className="font-mono text-[8px] pl-3.5 mt-0.5">
-                <span className={agent.provider === 'OpenAI' ? 'text-terminal-green/60' : 'text-bmw-blue/60'}>
+                <span className={agent.provider === 'Anthropic' ? 'text-terminal-amber/60' : 'text-bmw-blue/60'}>
                   {agent.provider}
                 </span>
                 <span className="text-muted-foreground/40"> / </span>
@@ -38,7 +38,7 @@ const AgentRoster = () => {
           <div>SESSION: #0042</div>
           <div>PROTOCOL: v2.1</div>
           <div>LEDGER: 10Y LOADED</div>
-          <div>MODELS: 3× OpenAI, 3× Gemini</div>
+          <div>MODELS: 3× Claude, 3× Gemini</div>
         </div>
       </div>
     </div>

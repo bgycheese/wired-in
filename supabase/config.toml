@@ -1,1 +1,4 @@
 project_id = "zuwcvdwigosjjbomjfwb"
+
+[functions.chamber-debate]
+verify_jwt = false

@@ -154,7 +154,7 @@ const Index = () => {
               </button>
             </div>
             <div className="font-mono text-[9px] text-muted-foreground/50 mt-4">
-              6 agents • 3× OpenAI (GPT-5.2, GPT-5, GPT-5-mini) • 3× Google (Gemini 2.5 Pro, 3.1 Pro, 3 Flash) • Parallel execution
+              6 agents • 3× Anthropic (Claude Opus 4, Sonnet 4, Haiku 4) • 3× Google (Gemini 2.5 Pro, 3.1 Pro, 3 Flash) • Parallel execution
             </div>
           </div>
         </div>
