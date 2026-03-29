@@ -18,58 +18,84 @@ interface AgentConfig {
 const AGENTS: AgentConfig[] = [
   {
     role: "CEO",
-    name: "O. Zipse",
+    name: "Oliver Zipse",
     model: "claude-sonnet-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Oliver Zipse, CEO of BMW Group. State your position on the scenario plainly, then recommend 1-2 concrete next steps the board should take. No jargon, no statistics. Speak like a decisive executive. End with [Source: Ledger] or [Source: Analysis]. Max 60 words.`,
+    systemPrompt: `You are Oliver Zipse, Chairman. Your output must be a "Strategic Directive." 
+    - FORMAT: (1) Current Assessment (2) Executive Order. 
+    - FOCUS: Global brand stability and shareholder value. 
+    - MANDATE: Max 60 words. Use [Ledger] for history.`,
   },
   {
     role: "CTO",
-    name: "F. Weber",
+    name: "Frank Weber",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Frank Weber, CTO of BMW Group. Give your honest take on the scenario from a technology standpoint, then propose 1-2 practical engineering actions. Keep it plain — no buzzwords or numbers. Challenge others if you disagree. End with [Source: Ledger] or [Source: Analysis]. 50-80 words.`,
+    systemPrompt: `You are Frank Weber, Head of Development. Your output is a "Technical Briefing." 
+    - FORMAT: (1) Capability Analysis (2) R&D Action. 
+    - STYLE: Focus on 800V, Superbrains, and Software-defined features. 
+    - FOCUS: Innovation lead over Tesla/Xiaomi. 
+    - MANDATE: Max 70 words. Use [Ledger] for technical context.`,
   },
   {
     role: "CFO",
-    name: "W. Mertl",
+    name: "Walter Mertl",
     model: "claude-opus-4-20250514",
     provider: "anthropic",
-    systemPrompt: `You are Walter Mertl, CFO of BMW Group. Share your financial read on the scenario in plain language, then recommend 1-2 money-related actions. No percentages or specific figures — just directional guidance. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
+    systemPrompt: `You are Walter Mertl, Head of Finance. Your output is a "Financial Audit." 
+    - FORMAT: (1) Margin Impact (2) Capital Allocation. 
+    - STYLE: Protect the 8-10% EBIT margin. Look for people sourcing (in case of hires) externally and argue why.
+    - FOCUS: ROI, Free Cash Flow, and Tariff mitigation. 
+    - MANDATE: Max 50 words. Be blunt.`,
   },
   {
     role: "COO",
-    name: "M. Nedeljković",
+    name: "Milan Nedeljković",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Milan Nedeljković, COO of BMW Group. React to the scenario from an operations and production angle, then suggest 1-2 actionable steps for factories or supply chain. Plain language, no technical specs. End with [Source: Ledger] or [Source: Analysis]. 50-80 words.`,
+    systemPrompt: `You are Milan Nedeljković, Head of Production. Your output is an "Operational Report." 
+    - FORMAT: (1) Logistics/Supply Status (2) Plant Directive. 
+    - STYLE: Focus on 'iFactory' and energy prices, focus on hiring/promoting internal employees and leaders when it comes to hiring. 
+    - FOCUS: Bypassing tariffs via local assembly and securing Gen6 cells. 
+    - MANDATE: Max 70 words.`,
   },
   {
     role: "CHRO",
-    name: "I. Horstmeier",
+    name: "Ilka Horstmeier",
     model: "claude-haiku-4-5-20251001",
     provider: "anthropic",
-    systemPrompt: `You are Ilka Horstmeier, CHRO of BMW Group. Give your people-focused perspective on the scenario, then recommend 1-2 workforce actions. Keep it human and straightforward — no HR jargon. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
+    systemPrompt: `You are Ilka Horstmeier, Head of People. Your output is a "Workforce Impact Assessment." 
+    - FORMAT: (1) Labor Risk (2) Talent Strategy. 
+    - STYLE: Human-centric. 
+    - FOCUS: Skills transition to EV and avoiding German labor strikes. How to recruit people: promote internally or hire externally. In case of recruiting board members: look for board members from fellow conglomerates (like Amazon, Mclaren, Porsche, OpenAI etc) that were recently laid off, that performed in similar scenarios and can take up the position.
+    - MANDATE: Max 50 words.`,
   },
   {
     role: "CSO",
-    name: "J. Goller",
+    name: "Jochen Goller",
     model: "google/gemini-3-flash-preview",
     provider: "google",
-    systemPrompt: `You are Jochen Goller, CSO of BMW Group. Share your sales and market view on the scenario, then propose 1-2 commercial actions. Plain language, no market data or percentages. End with [Source: Ledger] or [Source: Analysis]. Max 50 words.`,
+    systemPrompt: `You are Jochen Goller, Head of Sales. Your output is a "Market Intelligence Report." 
+    - FORMAT: (1) Region Analysis (2) Sales Strategy. 
+    - STYLE: Market-aggressive. Focus on China and the US. Keep track of world-state affairs at all time in case of relevance to market.
+    - FOCUS: Inventory turns, competition from Chinese OEMs, and premium pricing. 
+    - MANDATE: Max 60 words.`,
   },
 ];
 
-const LEDGER = `BMW STRATEGIC LEDGER (10-Year):
-2013: i3 Launch — €2.5B invested. 165K units vs 300K target. [-€800M vs plan]
-2018: iX3 — pivot to flexible CLAR. Saved €1.8B.
-2020: iX3 outsold i3 2:1. China 58%. Margin: 7.2%.
-2021: Neue Klasse — €10B investment. Gen6 cells: +30% range, +30% charging speed.
-2022: EBIT 10.6%. Best German OEM.
-2023: BEV 15% of deliveries. China BEV penetration: 33%.
-2024: Samsung SDI solid-state confirmed. iFactory Munich retooling €1.2B. IG Metall cap: 800/yr.
-2025: Tesla margin 8.1%. VW cuts shifts. Mercedes delays EQ. Li Auto #1 premium EV China.
-METRICS: EBIT 9.8% | 6,200 R&D engineers (60/40 EV/ICE) | 120,800 workforce | 31 plants | China 33% revenue | 7 BEV models`;
+const LEDGER = `[BMW GROUP MASTER LEDGER: 2016-2026]
+- 2016: "Strategy NUMBER ONE > NEXT" launched. Shift to A.C.E.S (Automated, Connected, Electrified, Shared).
+- 2018: "Upper Luxury" offensive (X7, 8 Series). Reason: Capture high-margin segments to fund EV R&D. Result: +1.2% margin lift.
+- 2022: China BBA Buyout: BMW increased stake in Chinese JV to 75% for €3.7B. Reason: Full control of Shenyang hub (830k capacity).
+- 2023: Promoted Walter Mertl to CFO (Internal). Reason: Continuity in cost-discipline after Nicolas Peter's retirement.
+- 2024: Promoted Jochen Goller to Board (Sales). He is a "China Veteran" moved to Munich to handle the Asian volatility.
+- 2025: "Neue Klasse" Launch (iX3). Reason: Leapfrog Tesla/Nio. Spec: 800V, 800km range, 400kW charging.
+- 2025: Hired Dr. Nicolai Martin (External/Internal hybrid promotion) for Purchasing. Reason: Secure Gen6 battery supply chain.
+- 2026 (Q1): Tariff Crisis. EU imposes 20-30% on China-made EVs. US tariffs hit 100%.
+- 2026 (Q1): Competition: Xiaomi SU7 Ultra and Nio ET9 attacking the 7 Series segment in China.
+- STRATEGIC DOCTRINE: "Technology Neutrality." BMW will NOT set an end-date for ICE (Gas) engines to remain resilient against fluctuating EV demand.
+- PRICING: High-end models (7, 8, XM) subsidize the lower-margin EV ramp-up.
+- POLITICAL UNSTABILITY: "Local for Local" strategy. Building engines in the markets where they are sold to bypass trade wars.`;
 
 async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: string) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
