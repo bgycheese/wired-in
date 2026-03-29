@@ -97,51 +97,7 @@ const LEDGER = `[BMW GROUP MASTER LEDGER: 2016-2026]
 - PRICING: High-end models (7, 8, XM) subsidize the lower-margin EV ramp-up.
 - POLITICAL UNSTABILITY: "Local for Local" strategy. Building engines in the markets where they are sold to bypass trade wars.`;
 
-async function callAnthropic(agent: AgentConfig, userContent: string, apiKey: string) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: agent.model,
-      max_tokens: 400,
-      system: `${agent.systemPrompt}\n\n${LEDGER}`,
-      messages: [{ role: "user", content: userContent }],
-    }),
-  });
-  if (!res.ok) {
-    const t = await res.text();
-    console.error(`Anthropic ${agent.role} (${agent.model}) error ${res.status}:`, t);
-    return { content: `[ERROR] Claude agent failed (${res.status}). ${t.slice(0, 100)}`, error: true };
-  }
-  const data = await res.json();
-  return { content: (data.content?.[0]?.text || "[No response]").trim(), error: false };
-}
-
-async function callGemini(agent: AgentConfig, userContent: string, apiKey: string) {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: agent.model,
-      messages: [
-        { role: "system", content: `${agent.systemPrompt}\n\n${LEDGER}` },
-        { role: "user", content: userContent },
-      ],
-      max_tokens: 400,
-    }),
-  });
-  if (!res.ok) {
-    const t = await res.text();
-    console.error(`Gemini ${agent.role} (${agent.model}) error ${res.status}:`, t);
-    return { content: `[ERROR] Gemini agent failed (${res.status}).`, error: true };
-  }
-  const data = await res.json();
-  return { content: (data.choices?.[0]?.message?.content || "[No response]").trim(), error: false };
-}
+// API calls are now inlined in the sequential loop below
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
